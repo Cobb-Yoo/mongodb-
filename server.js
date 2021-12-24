@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
+app.set("view engine", "ejs");
 require("dotenv").config();
 
 const MongoClient = require("mongodb").MongoClient;
@@ -17,7 +18,7 @@ MongoClient.connect(
     db = client.db("todoapp");
 
     app.listen(8080, function () {
-      console.log("listening on 8080");
+      console.log("http://localhost:8080");
     });
   }
 );
@@ -42,4 +43,14 @@ app.post("/add", function (req, res) {
     }
   );
   res.send("전송완료");
+});
+
+app.get("/list", function (req, res) {
+  db.collection("post") // db선택
+    .find()
+    .toArray(function (err, res) {
+      console.log(res);
+    }); // 다 가져오기
+
+  res.render("list.ejs", { posts: res }); // 결과를 ejs파일로 보냄
 });
