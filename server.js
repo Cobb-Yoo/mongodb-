@@ -34,14 +34,18 @@ app.get("/write", function (req, res) {
 app.post("/add", function (req, res) {
   console.log(req.body);
 
-  //db저장
-  db.collection("post").insertOne(
-    { title: req.body.title, weather: req.body.weather },
+  db.collection("counter").findOne({ name: "게시물갯수" }, function (err, res) {
+    var totalPost = res.totalPost;
 
-    function (err, res) {
-      console.log("ok save");
-    }
-  );
+    db.collection("post").insertOne(
+      { _id: totalPost + 1, title: req.body.title, weather: req.body.weather },
+      function (err, res) {
+        console.log("ok save");
+      }
+    );
+  });
+
+  //db저장
   res.send("전송완료");
 });
 
