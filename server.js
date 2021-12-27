@@ -41,6 +41,13 @@ app.post("/add", function (req, res) {
       { _id: totalPost + 1, title: req.body.title, weather: req.body.weather },
       function (err, res) {
         console.log("ok save");
+
+        // {어떤 데이터를}, {이렇게 변경}
+        // operaotr를 필수로 사용해야함
+        db.collection("counter").updateOne(
+          { name: "게시물갯수" },
+          { $inc: { totalPost: 1 } }
+        );
       }
     );
   });
