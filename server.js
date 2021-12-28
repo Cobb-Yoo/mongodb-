@@ -38,7 +38,7 @@ app.post("/add", function (req, res) {
     var totalPost = res.totalPost;
 
     db.collection("post").insertOne(
-      { _id: totalPost + 1, title: req.body.title, weather: req.body.weather },
+      { _id: totalPost + 1, title: req.body.title, date: req.body.date },
       function (err, res) {
         console.log("ok save");
 
@@ -59,9 +59,13 @@ app.post("/add", function (req, res) {
 app.get("/list", function (req, res) {
   db.collection("post") // db선택
     .find()
-    .toArray(function (err, res) {
-      console.log(res);
-    }); // 다 가져오기
+    .toArray(function (err, result) {
+      console.log(result);
 
-  res.render("list.ejs", { posts: res }); // 결과를 ejs파일로 보냄
+      res.render("list.ejs", { posts: result });
+    }); // 다 가져오기
+});
+
+app.delete("/delete", function (req, res) {
+  console.log(req.body);
 });
