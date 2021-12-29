@@ -67,5 +67,7 @@ app.get("/list", function (req, res) {
 });
 
 app.delete("/delete", function (req, res) {
+  req.body._id = parseInt(req.body._id);
+  db.collection("post").deleteOne(req.body, function () {});
   console.log(req.body);
 });

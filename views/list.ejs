@@ -84,7 +84,7 @@
       <li class="list-group-item">
         <h4>할일 제목 : <%= posts[i].title %></h4>
         <p>할일 마감날짜 : <%= posts[i].date %></p>
-        <button>삭제</button>
+        <button class="delete" data-id="<%= posts[i]._id %>">삭제</button>
       </li>
       <% } %>
     </ul>
@@ -94,13 +94,21 @@
   </script>
 
     <script>
+    $('.delete').click(function(e){
+      var num = e.target.dataset.id;
+    
       $.ajax({
         method : 'DELETE',
         url : '/delete',
-        data : '게시물번호'
+        data : { _id:num }
       }).done(function(res){
 
+      }).fail(function(){
+
       });
+    })
+
+      
     </script>
 
     <!-- Optional JavaScript; choose one of the two! -->
