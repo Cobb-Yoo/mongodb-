@@ -8,6 +8,9 @@ require("dotenv").config();
 const MongoClient = require("mongodb").MongoClient;
 var db;
 
+const methodOverride = require("method-override");
+app.use(methodOverride("_method"));
+
 MongoClient.connect(
   "mongodb+srv://admin:qwer1234@cluster0.xcc2i.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
   function (err, client) {
@@ -78,8 +81,28 @@ app.get("/detail/:id", function (req, res) {
     { _id: parseInt(req.params.id) },
     function (err, result) {
       console.log(result);
+      res.render("detail.ejs", { data: result });
     }
   );
+});
 
-  res.render("detail.ejs", { data: res });
+app.get("/edit/:id", function (req, res) {
+  db.collection("post").findOne(
+    { _id: parseInt(req.params.id) },
+    function (err, result) {
+      console.log(result);
+      res.render("edit.ejs", { data: result });
+    }
+  );
+});
+
+app.put("/edit", function (req, res) {
+  db.collection("post").updateOne(
+    { _id: parseInt(req.body._id) },
+    { $set: { title: req.body.title, date: req.body.date } },
+    function (err, result) {
+      console.log(result);
+      res.redirect("/list");
+    }
+  );
 });
