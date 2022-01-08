@@ -140,22 +140,27 @@ passport.use(
       session: true, //세선정보를 저장할 것인가?
       passReqToCallback: false, //아이디/비번 외에 추가적인 검증이 필요할 때.
     },
-    function (입력한아이디, 입력한비번, done) {
-      //console.log(입력한아이디, 입력한비번);
-      db.collection("login").findOne(
-        { id: 입력한아이디 },
-        function (에러, 결과) {
-          if (에러) return done(에러);
+    function (id, pw, done) {
+      db.collection("login").findOne({ id: id }, function (err, res) {
+        if (err) return done(err);
 
-          if (!결과)
-            return done(null, false, { message: "존재하지않는 아이디요" });
-          if (입력한비번 == 결과.pw) {
-            return done(null, 결과);
-          } else {
-            return done(null, false, { message: "비번틀렸어요" });
-          }
+        if (!res) return done(null, false, { message: "존재하지않는 아이디" });
+        if (pw == res.pw) {
+          return done(null, res);
+        } else {
+          return done(null, false, { message: "비번틀렸어요" });
         }
-      );
+      });
     }
   )
 );
+
+//id를 이용해서 세션을 저장시키는 코드(로그인 성공시 발동)
+passport.serializeUser(function (user, done) {
+  done(null, user.id);
+});
+
+//아 새숀 데이터를 가진 사람을 DB에서 찾아주세요 (마이페이지 접속시 발동)
+passport.deserializeUser(function (id, done) {
+  done(null, {});
+});
