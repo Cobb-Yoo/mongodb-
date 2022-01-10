@@ -131,6 +131,20 @@ app.post(
   }
 );
 
+app.get("/mypage", checkLogined, function (req, res) {
+  console.log("hello");
+  console.log(req.user);
+  res.render("mypage.ejs", { user: req.user });
+});
+
+function checkLogined(req, res, next) {
+  if (req.user) {
+    next();
+  } else {
+    res.send("not logined");
+  }
+}
+
 //local strategy의 인증방식?
 passport.use(
   new LocalStrategy(
@@ -162,5 +176,8 @@ passport.serializeUser(function (user, done) {
 
 //아 새숀 데이터를 가진 사람을 DB에서 찾아주세요 (마이페이지 접속시 발동)
 passport.deserializeUser(function (id, done) {
-  done(null, {});
+  //db에서 user.id로 유저를 찾은 뒤에 유저 정보를 아래에 넣음...
+  db.collection("login").findOne({ id: id }, function (err, res) {
+    done(null, res);
+  });
 });
