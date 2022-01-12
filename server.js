@@ -184,12 +184,23 @@ passport.deserializeUser(function (id, done) {
 });
 
 app.get("/search", (req, res) => {
-  console.log(req.query);
+  var option = [
+    {
+      $search: {
+        index: "titleSearch",
+        text: {
+          query: req.query.value,
+          path: "title", // 제목날짜 둘다 찾고 싶으면 ['제목', '날짜']
+        },
+      },
+    },
+  ];
 
-  db.collection("post") // db선택
-    .find({ title: req.query.value })
-    .toArray(function (err, result) {
+  db.collection("post")
+    .aggregate(option)
+    // .find({ $text: { $search: req.query.value } })
+    .toArray((에러, result) => {
       console.log(result);
       res.render("list.ejs", { posts: result });
-    }); // 다 가져오기
+    });
 });
