@@ -31,7 +31,8 @@ app.get("/", function (req, res) {
 });
 
 app.get("/write", function (req, res) {
-  res.sendFile(__dirname + "/write.html");
+  res.render("write.ejs");
+  //res.sendFile(__dirname + "/views/write.html");
 });
 
 app.post("/add", function (req, res) {
@@ -180,4 +181,15 @@ passport.deserializeUser(function (id, done) {
   db.collection("login").findOne({ id: id }, function (err, res) {
     done(null, res);
   });
+});
+
+app.get("/search", (req, res) => {
+  console.log(req.query);
+
+  db.collection("post") // db선택
+    .find({ title: req.query.value })
+    .toArray(function (err, result) {
+      console.log(result);
+      res.render("list.ejs", { posts: result });
+    }); // 다 가져오기
 });
