@@ -183,6 +183,16 @@ passport.deserializeUser(function (id, done) {
   });
 });
 
+app.post("/register", function (req, res) {
+  console.log(req.body.id);
+  db.collection("login").insertOne(
+    { id: req.body.id, pw: req.body.pw },
+    function (err, result) {
+      res.redirect("/");
+    }
+  );
+});
+
 app.get("/search", (req, res) => {
   var option = [
     {
